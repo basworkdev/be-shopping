@@ -7,4 +7,4 @@ RUN npm install
 EXPOSE 3000
 # Bundle app source
 COPY . .
-CMD ["npm","start"]
+CMD ["npm","run dev"]
