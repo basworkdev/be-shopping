@@ -4,7 +4,7 @@ ENV PORT=3001
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
-EXPOSE 3000
+EXPOSE 3001
 # Bundle app source
 COPY . .
 CMD ["npm","run dev"]
