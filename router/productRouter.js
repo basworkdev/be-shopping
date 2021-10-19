@@ -296,9 +296,9 @@ exports.getProductByKey = (req,res)=>{
 exports.getProductByType = (req,res)=>{
     try {
         const type = req.params.type;
-        let whereSQl = `WHERE pr.type = '${type}' LIMIT 8`;
+        let whereSQl = `WHERE pr.type = '${type}' AND pr.status = 'Y' LIMIT 8`;
         if(type === "all") {
-            whereSQl = `ORDER BY RAND() LIMIT 8`;
+            whereSQl = `WHERE pr.status = 'Y' ORDER BY RAND() LIMIT 8`;
         }
         db.query(`SELECT 
             pr.id AS id , 
@@ -370,7 +370,7 @@ exports.getProductAllByType = (req,res)=>{
             FROM products AS pr 
             INNER JOIN brand AS pb ON pr.brand = pb.id 
             INNER JOIN product_type AS pt ON pr.type = pt.id 
-            WHERE pr.type LIKE '%${type}%'`,(err,result)=>{
+            WHERE pr.type LIKE '%${type}%' AND pr.status = 'Y' `,(err,result)=>{
             if(err) {
                 console.log(err);
             }else {

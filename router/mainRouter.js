@@ -1,8 +1,11 @@
 const db = require('../myconnect/myconnect')
 const fs = require('fs');
 const mime = require('mime');
+let moment = require('moment');
 
 exports.uploadImage = (req,res)=>{
+    let folderName = req.body.folderName;
+    let fileName = req.body.fileName;
     var matches = req.body.base64image.match(/^data:([A-Za-z-+/]+);base64,(.+)$/),
     response = {};
     
@@ -14,11 +17,11 @@ exports.uploadImage = (req,res)=>{
     response.data = Buffer.from(matches[2], 'base64');
     let decodedImg = response;
     let imageBuffer = decodedImg.data;
-    let type = decodedImg.type;
-    console.log(type)
-    let fileName = "image." + "jpeg";
+    // let type = decodedImg.type;
+    // console.log(type)
+    // fileName = moment(Date.now()).format('YYYYMMDD_hhmmss') + "_" + fileName[0] + ".jpeg";
     try {
-        fs.writeFileSync("./imagesSlipPay/" + fileName, imageBuffer, 'utf8');
+        fs.writeFileSync(folderName + fileName, imageBuffer, 'utf8');
         return res.send({"status":"success"});
     } catch (error) {
         console.log("error : " , error)
