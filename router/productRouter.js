@@ -80,8 +80,10 @@ exports.CreactProduct = (req,res)=>{
         const mainImg = req.body.mainImg;
         const deliveryCost = parseFloat(req.body.deliveryCost)
         const salesType = req.body.salesType;
-        db.query(`INSERT INTO products (name, mainDetail, detail, subDetail, price, fullPrice, productKey, color, stock, img, type, brand, status , mainImg , deliveryCost , salesType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,?)`,
-        [name,mainDetail,detail,subDetail,price,fullPrice,productKey,color,stock,img,type,brand,status,mainImg,deliveryCost,salesType],(err,result)=>{
+        const carModelId = req.body.carModelId;
+        const carModel = req.body.carModel;
+        db.query(`INSERT INTO products (name, mainDetail, detail, subDetail, price, fullPrice, productKey, color, stock, img, type, brand, status , mainImg , deliveryCost , salesType , carModelId , carModel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? ,?)`,
+        [name,mainDetail,detail,subDetail,price,fullPrice,productKey,color,stock,img,type,brand,status,mainImg,deliveryCost,salesType,carModelId,carModel],(err,result)=>{
             if(err) {
                 console.log(err);
             }else {
@@ -118,6 +120,8 @@ exports.UpdateProduct = (req,res)=>{
         const status = req.body.status;
         const deliveryCost = parseFloat(req.body.deliveryCost);
         const salesType = req.body.salesType;
+        const carModelId = req.body.carModelId;
+        const carModel = req.body.carModel;
         db.query(`UPDATE 
             products SET 
             name = ?, 
@@ -135,9 +139,11 @@ exports.UpdateProduct = (req,res)=>{
             brand = ?, 
             status = ?,
             deliveryCost = ?,
-            salesType = ?
+            salesType = ?,
+            carModelId = ?,
+            carModel = ?
             WHERE products.id = ?`,
-        [name,mainDetail,detail,subDetail,price,fullPrice,productKey,color,stock,mainImg,img,type,brand,status,deliveryCost,salesType,id],(err,result)=>{
+        [name,mainDetail,detail,subDetail,price,fullPrice,productKey,color,stock,mainImg,img,type,brand,status,deliveryCost,salesType,carModelId,carModel,id],(err,result)=>{
             if(err) {
                 console.log(err);
             }else {
@@ -233,6 +239,8 @@ exports.getProductById = (req,res)=>{
             pr.color AS color,
             pr.deliveryCost AS deliveryCost,
             pr.salesType AS salesType,
+            pr.carModelId AS carModelId,
+            pr.carModel AS carModel,
             pb.name AS brandName_th, 
             pb.id AS brandId,
             pt.name_th AS typeName,

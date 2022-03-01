@@ -85,3 +85,17 @@ exports.login = (req,res)=>{
         }
     })
 }
+
+exports.getCarModel = (req,res)=>{
+    try {
+        db.query(`SELECT * FROM car_model`,(err,result)=>{
+            if(err) {
+                console.log(err);
+            }else {
+                res.send(result);
+            }
+        })
+    } catch (error) {
+        console.log("error : " , error)
+    }
+}

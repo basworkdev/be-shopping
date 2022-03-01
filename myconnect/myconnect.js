@@ -1,17 +1,17 @@
 const mysql = require('mysql');
 
 // local
-const user = "root";
-const host = "localhost";
-const password = "";
-const database = "shopping";
+// const host = "localhost";
+// const user = "root";
+// const password = "";
+// const database = "shopping";
 
 
 // server
-// const user = "root";
-// const host = "34.87.136.246";
-// const password = "sarawut0304";
-// const database = "rodxshop";
+const host = "27.254.38.3";
+const user = "phanecho_shopx";
+const password = "sarawut0304";
+const database = "phanecho_shopx";
 
 const db = mysql.createConnection({
     user: user,

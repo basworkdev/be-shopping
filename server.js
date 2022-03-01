@@ -43,7 +43,7 @@ filename: function (req, file, cb) {
 })
 const upload = multer({ storage: storage }) 
     app.get('/', (req, res) => {
-    res.send('Hello Upload')
+    res.send('Hello Upload ss')
 })
 app.post('/upload', upload.single('file'),  (req, res) => { 
 res.send(req.file)
@@ -65,7 +65,7 @@ filename: function (req, file, cb) {
 })
 const uploadFolder = multerFolder({ storage: storageFolder }) 
     app.get('/', (req, res) => {
-    res.send('Hello Upload')
+    res.send('Hello Upload xx')
 })
 
 app.post('/uploadFolder', uploadFolder.single('file'),  (req, res) => { 
@@ -92,6 +92,7 @@ app.get('/getProductById/:id', productRouter.getProductById);
 app.get('/getProductByKey/:key', productRouter.getProductByKey);
 app.get('/getProductByType/:type', productRouter.getProductByType);
 app.get('/getProductAllByType/:type', productRouter.getProductAllByType);
+app.get('/getCarModel', mainRouter.getCarModel);
 
 // POST
 app.post('/createProduct', productRouter.CreactProduct);
