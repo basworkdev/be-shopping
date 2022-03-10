@@ -15,6 +15,7 @@ exports.saveOrderDetail = async (req,orderId) => {
         const price = parseFloat(req.price);
         const stock = parseInt(req.stock);
         const order_time = new Date();
+        const carModel = req.carModel;
         let status = 0; 
         status = await db.query(`INSERT INTO order_detail (
             order_id , 
@@ -29,8 +30,9 @@ exports.saveOrderDetail = async (req,orderId) => {
             product_id , 
             order_amount , 
             price , 
-            stock
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?)`,
+            stock,
+            carModel
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?,?)`,
         [
             order_id,
             brandId,
@@ -44,7 +46,8 @@ exports.saveOrderDetail = async (req,orderId) => {
             product_id,
             order_amount,
             price,
-            stock
+            stock,
+            carModel
         ],(err,result)=>{
             if(err) {
                 console.log(err);
