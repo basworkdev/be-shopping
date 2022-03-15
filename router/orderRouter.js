@@ -2,8 +2,11 @@ const db = require('../myconnect/myconnect')
 let moment = require('moment');
 const tc = require('../textConfig/textConfig.json')
 const OrderDao = require('../dao/OrderDao')
-const productRouter = require('./productRouter')
+const productRouter = require('./productRouter');
+const mainRouter = require('./mainRouter');
 
+const dotenv = require('dotenv');
+dotenv.config();
 
 // const orderDao = new OrderDao();
 exports.saveOrder = async (req,res) => {
@@ -119,7 +122,11 @@ exports.saveOrder = async (req,res) => {
                 }
             })
     } catch (error) {
-        console.log("error : " , error)
+        res.send({
+            status : "success",
+            message : tc.success.errorSystem,
+            code : 1
+        });
     }
 }
 
@@ -204,17 +211,34 @@ exports.searchOrderDetailByOrderId = async (req,res) => {
 
 
 exports.updateSlip = async (req,res) => {
+    console.log("updateSlip")
+    console.log("process.env.WEP_APP" , process.env.WEP_APP)
     const orderId = req.body.orderId;
     const pay_status = req.body.pay_status;
     const pay_date = req.body.pay_date;
     const status = req.body.status;
     const pay_image = req.body.pay_image;
+    
     try {
         db.query(`UPDATE orders SET pay_status = '${pay_status}', pay_date = '${pay_date}', status = '${status}' , pay_image = '${pay_image}' WHERE id = '${orderId}'`,(err,result)=>{
             if(err) {
                 console.log(err);
             }else {
                 console.log(result);
+                if(req.body.order) {
+                    const order = JSON.parse(req.body.order);
+                    console.log("order" , order)
+                    let htmlMail = tc.sendEmail.UPLOADSLIP;
+                    htmlMail = htmlMail.replace("#id", order.id);
+                    htmlMail = htmlMail.replace("#url", `${process.env.WEP_APP}order-status/${order.id}`);
+                    const mail = {
+                        to: order.customer_email,
+                        subject: `คำสั่งซื้อหมายเลข ${order.id} ได้ส่งหลักฐานการชำระเงินแล้ว`,
+                        text: "",
+                        html: htmlMail
+                    }
+                    mainRouter.sendMail(mail)
+                }
                 res.send({
                     status : "success",
                     message : "บันทึกสำเร็จ",

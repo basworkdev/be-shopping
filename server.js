@@ -101,6 +101,7 @@ app.post('/deleteProduct', productRouter.DeleteProduct);
 app.post('/deleteImage/:name', productRouter.deleteImage);
 app.post('/updateOrderDetail' , orderRouter.updateOrderDetail);
 app.post('/uploadImage' , mainRouter.uploadImage);
+app.post('/sendMailOrder' , mainRouter.sendMailOrder);
 
 
 // Address
@@ -118,6 +119,7 @@ app.post('/updateSlip',orderRouter.updateSlip);
 app.get('/getOrderById/:orderId',orderRouter.getOrderById);
 app.post('/searchOrder',orderRouter.searchOrder);
 app.get('/searchOrderDetailByOrderId/:orderId',orderRouter.searchOrderDetailByOrderId);
+app.get('/sendMail',mainRouter.sendMail);
 
 
 const PORT = process.env.PORT || 8080;
