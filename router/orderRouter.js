@@ -105,6 +105,14 @@ exports.saveOrder = async (req,res) => {
                         }
                     }
                     console.log("status",status)
+                    console.log("brfor send mail ======== >")
+                        const mail = {
+                            from: process.env.EMAIL_USER,
+                            to: process.env.EMAIL_USER2,
+                            subject: `(Admin) มีคำสั่งซื้อใหม่ รหัส ${id} (ยังไม่ได้ชำระเงิน)`,
+                            text: `มีคำสั่งซื้อใหม่ เมื่อเวลา ${new Date()}`
+                        }
+                    mainRouter.sendMail(mail)
                     if(status.length === orderDetail.length) {
                         res.send({
                             status : "success",
@@ -232,12 +240,21 @@ exports.updateSlip = async (req,res) => {
                     htmlMail = htmlMail.replace("#id", order.id);
                     htmlMail = htmlMail.replace("#url", `${process.env.WEP_APP}order-status/${order.id}`);
                     const mail = {
+                        from : process.env.EMAIL_USER,
                         to: order.customer_email,
                         subject: `คำสั่งซื้อหมายเลข ${order.id} ได้ส่งหลักฐานการชำระเงินแล้ว`,
                         text: "",
                         html: htmlMail
                     }
                     mainRouter.sendMail(mail)
+
+                    const mail2 = {
+                            from : process.env.EMAIL_USER,
+                            to: process.env.EMAIL_USER2,
+                            subject: `(Admin) คำสั่งซื้อหมายเลข ${order.id} ได้ส่งหลักฐานการชำระเงินแล้ว`,
+                            text: `ชำระเงินเมื่อเวลา ${new Date()}`
+                        }
+                    mainRouter.sendMail(mail2)
                 }
                 res.send({
                     status : "success",

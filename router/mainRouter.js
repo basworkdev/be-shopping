@@ -110,9 +110,9 @@ exports.sendMailOrder = (req,res) => {
     try {
         let data = req.body;
         const mail = {
+            from : process.env.EMAIL_USER,
             to: data.customer_email,
             subject: "",
-            text: "",
             html: ""
         }
         if(data.status === "UPLOADSLIP") {
@@ -127,47 +127,57 @@ exports.sendMailOrder = (req,res) => {
             htmlMail = htmlMail.replace("#url", `${process.env.WEP_APP}order-status/${data.id}`);
             mail.subject = `คำสั่งซื้อหมายเลข ${data.id} ได้ทำการชำระเงินเรียบร้อย`
             mail.html = htmlMail
+        } else if(data.status === "DELIVER") {
+            let htmlMail = tc.sendEmail.DELIVER;
+            htmlMail = htmlMail.replace("#id", data.id);
+            htmlMail = htmlMail.replace("#url", `${process.env.WEP_APP}order-status/${data.id}`);
+            mail.subject = `คำสั่งซื้อหมายเลข ${data.id} อยู่ระหว่างการจัดส่ง`
+            mail.html = htmlMail
+        } else if(data.status === "SUCCESS") {
+            let htmlMail = tc.sendEmail.SUCCESS;
+            htmlMail = htmlMail.replace("#id", data.id);
+            htmlMail = htmlMail.replace("#url", `${process.env.WEP_APP}order-status/${data.id}`);
+            mail.subject = `คำสั่งซื้อหมายเลข ${data.id} ถูกจัดส่งเรียบร้อยแล้ว`
+            mail.html = htmlMail
+        } else {
+            res.send("ไม่สามารถส่ง email ได้ (ไม่มีสถานนะสินค้านี้ในการส่ง email)");
+            return null;
         }
-        sendMail(mail)
+        sendMail(mail,function (status) {
+            res.send(status);
+        });
     } catch (error) {
         console.log(error)
     }
     
 }
 
-const sendMail = (data)=>{
-    console.log("process.env.EMAIL_USER" , process.env.EMAIL_USER)
-    console.log("process.env.EMAIL_PASS" , process.env.EMAIL_PASS)
+const sendMail = (data , callback)=> {
     console.log("data" , data)
     try {
         var transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-              user: process.env.EMAIL_USER,
-              pass: process.env.EMAIL_PASS
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
             }
-          });
-          
-          var mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: data.to,
-            subject: data.subject,
-            text: data.text,
-            html: data.html
-          };
-          
-          transporter.sendMail(mailOptions, function(error, info){
+        });
+        // callback("xxxx");
+        transporter.sendMail(data, function(error, info){
             if (error) {
                 console.log(error);
-                return error
+                callback(error);
+                // return error
             } else {
                 console.log('Email sent: ' + info.response);
-                return 'Email sent: ' + info.response
+                callback(tc.sendEmail.statusSuccess);
+                // return 'Email sent: ' + info.response
             }
         });
     } catch (error) {
         console.log("error : " , error)
-        return error
+        callback(error);
+        // return error
     }
 }
 
@@ -184,15 +194,8 @@ exports.sendMail = (data)=>{
             }
           });
           
-          var mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: data.to,
-            subject: data.subject,
-            text: data.text,
-            html: data.html
-          };
           
-          transporter.sendMail(mailOptions, function(error, info){
+          transporter.sendMail(data, function(error, info){
             if (error) {
               console.log(error);
             } else {
